@@ -1,10 +1,11 @@
 import { Event } from "./events";
+import { EventRegistration } from "./eventRegistration";
 export type UserRole = "member" | "admin" | "officer";
 
 export class User {
   constructor(
     //runs automatically when you create a new object from a class
-    public id: number, //osis
+    public id: number, //osis or maybe use uuid, if use uuid change it to string
     public name: string,
     public email: string,
     private password: string,
@@ -15,8 +16,11 @@ export class User {
   changePassword(newPassword: string) {
     this.password = newPassword;
   }
-  joinEvent(eventId: number) {
-    console.log(`joined ${eventId} `);
+  joinEvent(eventId: string, userId: number) {
+    return new EventRegistration(eventId, userId);
+  }
+  deleteAccount() {
+    //waiot...
   }
 }
 
