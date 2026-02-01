@@ -1,6 +1,6 @@
-import { Event } from "./events";
+/* import { Event } from "./events";
 import { EventRegistration } from "./eventRegistration";
-export type UserRole = "member" | "admin" | "officer";
+
 
 export class User {
   constructor(
@@ -58,4 +58,51 @@ export class AdminUser extends User {
       maxParticipants,
     );
   }
+} */
+
+import { Schema, model } from "mongoose";
+export type UserRole = "member" | "admin" | "officer";
+export interface IUser {
+  id: number; //osis or maybe use uuid, if use uuid change it to string
+  name: string;
+  email: string;
+  password: string;
+  grade: number;
+  role: UserRole;
+  totalServiceHours: number;
 }
+const userSchema = new Schema<IUser>({
+  id: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  grade: {
+    type: Number,
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: ["member", "admin", "officer"],
+    default: "member",
+  },
+  totalServiceHours: {
+    type: Number,
+    default: 0,
+  },
+});
+
+export const user = model<IUser>("user", userSchema);

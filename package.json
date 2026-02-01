@@ -9,7 +9,9 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "mongoose": "^9.1.5",
     "uuid": "^13.0.0"
   }
 }
