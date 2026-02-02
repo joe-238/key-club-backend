@@ -50,6 +50,10 @@ const eventSchema = new Schema<IEvent>({
     type: String,
     required: true,
   },
+  hours: {
+    type: Number,
+    required: true,
+  },
   startTime: {
     type: Date,
     required: true,
