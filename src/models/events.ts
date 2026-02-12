@@ -25,6 +25,7 @@ export interface IEvent {
   type: string;
   description: string;
   location: string;
+  hours: number;
   startTime: Date;
   endTime: Date;
   createdBy: number;

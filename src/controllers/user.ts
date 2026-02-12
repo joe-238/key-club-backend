@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { User } from "../models/users";
+import * as userModel from "../models/users";
 
 export const UserRegister = async (req: Request, res: Response) => {
   try {
@@ -7,14 +7,14 @@ export const UserRegister = async (req: Request, res: Response) => {
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Missing required fields" });
     }
-    const existingUser = await User.findOne({ email });
+    const existingUser = await userModel.User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "Email already in use" });
     }
-    const user = await User.create({
+    const user = await userModel.User.create({
       name,
       email,
-      password, // 👈 plain text for now
+      password, // plain text for now
     });
 
     res.status(201).json({
