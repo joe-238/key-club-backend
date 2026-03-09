@@ -1,17 +1,17 @@
 import express, { Request, Response } from "express";
 import { connectDB } from "./db/mongoose";
-
-//import userRouter from "./routers/user";
 const app = express();
 const port = process.env.PORT || 3000;
 app.get("/", (req: Request, res: Response) => {
   res.send("hi");
 });
-//app.use("/user", userRouter);
-app.listen(port, () => {
-  //how you acc start the server
-  console.log(`Server is hosted on http://localhost:${port}`);
-});
-connectDB();
+async function startServer() {
+  await connectDB(); // wait for DB connection first
+
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}
+startServer();
 //backend for key club
 //use postman to test data
