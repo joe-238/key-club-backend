@@ -80,6 +80,8 @@ const userSchema = new Schema<IUser>(
       type: Number,
       required: true,
       unique: true,
+      min: 100000000,
+      max: 999999999,
     },
     name: {
       type: String,
@@ -91,6 +93,7 @@ const userSchema = new Schema<IUser>(
       unique: true,
       lowercase: true,
       trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Please use a valid email"],
     },
     password: {
       type: String,
