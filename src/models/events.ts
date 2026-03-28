@@ -20,11 +20,11 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Schema, model } from "mongoose";
 export interface IEvent {
-  id: number;
   title: string;
   type: string;
   description: string;
   location: string;
+  hours: number;
   startTime: Date;
   endTime: Date;
   createdBy: number;
@@ -33,11 +33,6 @@ export interface IEvent {
   isDraft: boolean;
 }
 const eventSchema = new Schema<IEvent>({
-  id: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
   title: {
     type: String,
     required: true,
@@ -45,6 +40,10 @@ const eventSchema = new Schema<IEvent>({
   type: {
     type: String,
     required: true,
+  },
+  description: {
+    type: String,
+    required: false,
   },
   location: {
     type: String,

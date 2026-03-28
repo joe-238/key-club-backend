@@ -1,16 +1,19 @@
 {
   "scripts": {
-    "dev": "ts-node-dev index.ts"
+    "dev": "ts-node-dev src/index.ts"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
     "@types/node": "^25.1.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "mongodb": "^7.1.0",
     "mongoose": "^9.1.5",
     "uuid": "^13.0.0"
   }

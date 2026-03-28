@@ -7,18 +7,18 @@
   ) {}
 } */
 
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 export interface IServiceHours {
-  id: number;
+  eventId: Types.ObjectId;
   userId: string;
   hours: number;
   date: Date;
 }
 const serviceHoursSchema = new Schema<IServiceHours>({
-  id: {
-    type: Number,
+  eventId: {
+    type: Types.ObjectId,
     required: true,
-    unique: true,
+    ref: "event",
   },
   userId: {
     type: String,
@@ -36,5 +36,5 @@ const serviceHoursSchema = new Schema<IServiceHours>({
 
 export const serviceHours = model<IServiceHours>(
   "serviceHours",
-  serviceHoursSchema,
+  serviceHoursSchema
 );
