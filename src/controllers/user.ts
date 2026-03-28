@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import { Request, Response } from "express";
 import * as userModel from "../models/users";
 
 export const createUser = async (req: Request, res: Response) => {
@@ -22,12 +22,8 @@ export const createUser = async (req: Request, res: Response) => {
     });
 
     res.status(201).json({
-      id: user._id,
-      osis: user.osis,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      grade: user.grade,
+      message: "User created successfully",
+      user,
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to create user" });
