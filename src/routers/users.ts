@@ -1,10 +1,6 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import * as userController from "../controllers/user";
 const router = express.Router();
-router.get("/", (req: Request, res: Response) => {
-  res.send("idk");
-});
-router.post("/", (req: Request, res: Response) => {
-  userController.createUser(req, res);
-});
+router.get("/", userController.getUser);
+router.post("/", userController.createUser);
 export default router;

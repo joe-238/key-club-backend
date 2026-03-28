@@ -30,7 +30,7 @@ export const createEvent = async (req: Request, res: Response) => {
     ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
-    const event = await eventModel.event.create({
+    const event = await eventModel.Event.create({
       title,
       type,
       description,
@@ -49,5 +49,21 @@ export const createEvent = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to create event" });
+  }
+};
+
+export const getEvent = async (req: Request, res: Response) => {
+  try {
+    const id = req.query.id as string;
+    if (!id) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    const event = await eventModel.Event.findById(id);
+    res.status(200).json({
+      message: "Event found",
+      event,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to get event" });
   }
 };

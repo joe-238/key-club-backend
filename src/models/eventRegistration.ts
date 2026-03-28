@@ -17,7 +17,8 @@ export type RegistrationStatus = "joined" | "attended" | "no-show";
 export interface IEventRegistration {
   status: RegistrationStatus;
   eventId: Types.ObjectId;
-  userId: number;
+  userId: Types.ObjectId;
+  osis: number;
 }
 const eventRegistrationSchema = new Schema<IEventRegistration>({
   status: {
@@ -30,12 +31,20 @@ const eventRegistrationSchema = new Schema<IEventRegistration>({
     ref: "event",
   },
   userId: {
+    type: Types.ObjectId, //osis
+    required: true,
+    ref: "user",
+  },
+  osis: {
     type: Number,
     required: true,
+    unique: true,
+    min: 100000000,
+    max: 999999999,
   },
 });
 
-export const eventRegistration = model<IEventRegistration>(
+export const EventRegistration = model<IEventRegistration>(
   "eventRegistration",
   eventRegistrationSchema,
 );

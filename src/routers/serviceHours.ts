@@ -4,8 +4,6 @@ const router = express.Router();
 router.get("/", (req: Request, res: Response) => {
   res.send("yo");
 });
-router.post("/", (req: Request, res: Response) => {
-  serviceHoursController.createHours(req, res);
-});
+router.post("/", serviceHoursController.createHours);
 
 export default router;
