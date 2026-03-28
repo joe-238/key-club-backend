@@ -3,5 +3,5 @@ import * as eventController from "../controllers/event";
 const router = express.Router();
 router.get("/", eventController.getEvent);
 router.post("/", eventController.createEvent);
-
+router.delete("/", eventController.deleteEvent);
 export default router;

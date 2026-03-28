@@ -24,6 +24,8 @@ const eventRegistrationSchema = new Schema<IEventRegistration>({
   status: {
     type: String,
     required: true,
+    enum: ["joined", "attended", "no-show"],
+    default: "joined",
   },
   eventId: {
     type: Types.ObjectId,
@@ -31,19 +33,12 @@ const eventRegistrationSchema = new Schema<IEventRegistration>({
     ref: "event",
   },
   userId: {
-    type: Types.ObjectId, //osis
+    type: Types.ObjectId,
     required: true,
     ref: "user",
   },
-  osis: {
-    type: Number,
-    required: true,
-    unique: true,
-    min: 100000000,
-    max: 999999999,
-  },
 });
-
+eventRegistrationSchema.index({ eventId: 1, userId: 1 }, { unique: true });
 export const EventRegistration = model<IEventRegistration>(
   "eventRegistration",
   eventRegistrationSchema,

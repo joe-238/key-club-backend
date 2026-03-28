@@ -6,7 +6,6 @@ import serviceHoursRouter from "./routers/serviceHours";
 import eventRegistrationsRouter from "./routers/eventRegistrations";
 const app = express();
 app.use(express.json());
-
 app.use("/users", usersRouter);
 app.use("/events", eventsRouter);
 app.use("/serviceHours", serviceHoursRouter);
@@ -17,7 +16,6 @@ app.get("/", (req: Request, res: Response) => {
 });
 async function startServer() {
   await connectDB(); // wait for DB connection first
-
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
   });

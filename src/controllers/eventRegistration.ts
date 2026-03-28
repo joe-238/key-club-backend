@@ -3,21 +3,13 @@ import * as eventRegistrationModel from "../models/eventRegistration";
 import * as userModel from "../models/users";
 export const register = async (req: Request, res: Response) => {
   try {
-    const { status, eventId, osis } = req.body;
-    if (!status || !eventId || !osis) {
+    const { eventId, userId } = req.body;
+    if (!eventId || !userId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
-    const user = await userModel.User.findOne({ osis });
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
-
     const registration = await eventRegistrationModel.EventRegistration.create({
-      status,
       eventId,
-      userId: user._id,
+      userId,
     });
     res.status(201).json({
       message: "Registration created successfully",
@@ -31,23 +23,18 @@ export const register = async (req: Request, res: Response) => {
 export const getRegistration = async (req: Request, res: Response) => {
   try {
     const eventId = req.query.eventId as string;
-    const osis = Number(req.query.osis);
+    const userId = req.query.userId as string;
 
-    if (!eventId || !osis) {
+    if (!eventId || !userId) {
       return res.status(400).json({
         message: "Missing required fields",
       });
     }
-    const user = await userModel.User.findOne({ osis });
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
+
     const registration = await eventRegistrationModel.EventRegistration.findOne(
       {
         eventId,
-        userId: user._id,
+        userId,
       },
     );
     if (!registration) {
@@ -61,5 +48,34 @@ export const getRegistration = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to get registration" });
+  }
+};
+
+export const deleteRegistration = async (req: Request, res: Response) => {
+  try {
+    const eventId = req.query.eventId as string;
+    const userId = req.query.userId as string;
+    if (!userId || !eventId) {
+      return res.status(400).json({
+        message: "Missing required fields",
+      });
+    }
+
+    const result = await eventRegistrationModel.EventRegistration.deleteOne({
+      eventId,
+      userId,
+    });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        message: "Registration not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Registration deleted successfully",
+      result,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete registration" });
   }
 };

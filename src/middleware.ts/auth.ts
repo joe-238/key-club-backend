@@ -1,4 +1,4 @@
-import { NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 
 export function authCheck(req: Request, res: Response, next: NextFunction) {
   if (req.query.user === "insert like stuff idk bro") {

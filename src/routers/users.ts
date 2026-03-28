@@ -3,4 +3,5 @@ import * as userController from "../controllers/user";
 const router = express.Router();
 router.get("/", userController.getUser);
 router.post("/", userController.createUser);
+router.delete("/", userController.deleteUser);
 export default router;
