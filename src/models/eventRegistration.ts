@@ -1,5 +1,3 @@
-export type RegistrationStatus = "joined" | "attended" | "no-show";
-
 /* 
 import { v4 as uuidv4 } from "uuid";
 export class EventRegistration {
@@ -14,26 +12,22 @@ export class EventRegistration {
   }
 } */
 
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
+export type RegistrationStatus = "joined" | "attended" | "no-show";
 export interface IEventRegistration {
-  id: number;
   status: RegistrationStatus;
-  eventId: string;
+  eventId: Types.ObjectId;
   userId: number;
 }
 const eventRegistrationSchema = new Schema<IEventRegistration>({
-  id: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
   status: {
     type: String,
     required: true,
   },
   eventId: {
-    type: String,
+    type: Types.ObjectId,
     required: true,
+    ref: "event",
   },
   userId: {
     type: Number,
