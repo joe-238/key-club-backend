@@ -34,7 +34,7 @@ const serviceHoursSchema = new Schema<IServiceHours>({
   },
 });
 
-export const serviceHours = model<IServiceHours>(
+export const ServiceHours = model<IServiceHours>(
   "serviceHours",
-  serviceHoursSchema
+  serviceHoursSchema,
 );

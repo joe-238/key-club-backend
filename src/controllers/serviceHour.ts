@@ -7,7 +7,7 @@ export const createHours = async (req: Request, res: Response) => {
     if (!eventId || !userId || !hours || !date) {
       return res.status(400).json({ message: "Missing required fields" });
     }
-    const serviceHours = serviceHourModel.serviceHours.create({
+    const serviceHours = await serviceHourModel.ServiceHours.create({
       eventId,
       userId,
       hours,
@@ -18,6 +18,52 @@ export const createHours = async (req: Request, res: Response) => {
       serviceHours,
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to create event" });
+    res.status(500).json({ message: "Failed to create hours" });
+  }
+};
+
+export const getHours = async (req: Request, res: Response) => {
+  try {
+    const eventId = req.query.eventId as string;
+    const userId = req.query.userId as string;
+    if (!eventId || !userId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    const serviceHours = await serviceHourModel.ServiceHours.findOne({
+      eventId,
+      userId,
+    });
+    if (!serviceHours) {
+      return res.status(404).json({ message: "Service hours not found" });
+    }
+    res.status(201).json({
+      message: "Service Hours found",
+      serviceHours,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to get hours" });
+  }
+};
+
+export const deleteHours = async (req: Request, res: Response) => {
+  try {
+    const eventId = req.query.eventId as string;
+    const userId = req.query.userId as string;
+    if (!eventId || !userId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    const result = await serviceHourModel.ServiceHours.findOneAndDelete({
+      eventId,
+      userId,
+    });
+    if (!result) {
+      return res.status(404).json({ message: "Service hours not found" });
+    }
+    res.status(201).json({
+      message: "Service Hours deleted",
+      result,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete hours" });
   }
 };
