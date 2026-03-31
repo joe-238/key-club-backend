@@ -18,7 +18,6 @@ export interface IEventRegistration {
   status: RegistrationStatus;
   eventId: Types.ObjectId;
   userId: Types.ObjectId;
-  osis: number;
 }
 const eventRegistrationSchema = new Schema<IEventRegistration>({
   status: {
@@ -41,5 +40,5 @@ const eventRegistrationSchema = new Schema<IEventRegistration>({
 eventRegistrationSchema.index({ eventId: 1, userId: 1 }, { unique: true });
 export const EventRegistration = model<IEventRegistration>(
   "eventRegistration",
-  eventRegistrationSchema,
+  eventRegistrationSchema
 );
