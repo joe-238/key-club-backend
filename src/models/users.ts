@@ -62,14 +62,19 @@ export class AdminUser extends User {
 
 import { Schema, model, Document } from "mongoose";
 import bcrypt from "bcrypt";
-export type UserRole = "member" | "admin" | "officer";
+
+export enum Role {
+  MEMBER = "member",
+  ADMIN = "admin",
+  OFFICER = "officer",
+}
 export interface IUser extends Document {
   osis: number; //osis or maybe use uuid, if use uuid change it to string
   name: string;
   email: string;
   password: string;
   grade: number;
-  role: UserRole;
+  role: Role;
   totalServiceHours: number;
 
   comparePassword(candidate: string): Promise<boolean>;
@@ -106,15 +111,15 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["member", "admin", "officer"],
-      default: "member",
+      enum: Object.values(Role),
+      default: Role.MEMBER,
     },
     totalServiceHours: {
       type: Number,
       default: 0,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 userSchema.pre("save", async function () {
   //pre("save", ...) → Tells Mongoose “Before a User document is saved to MongoDB, run this function
@@ -124,7 +129,7 @@ userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, saltRounds);
 });
 userSchema.methods.comparePassword = async function (
-  candidate: string,
+  candidate: string
 ): Promise<boolean> {
   return bcrypt.compare(candidate, this.password);
 };
