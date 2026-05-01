@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import * as userModel from "../models/users";
 import generateToken from "../utils/generateToken";
 
-export const registerUser = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response) => {
   try {
     const { osis, name, email, password, grade } = req.body;
     if (!osis || !name || !email || !password || !grade) {
@@ -31,7 +31,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-export const loginUser = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
