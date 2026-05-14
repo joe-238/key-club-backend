@@ -1,4 +1,4 @@
-import { Schema, model, Document, HookNextFunction } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 import bcrypt from "bcrypt";
 
 export enum Role {
@@ -63,13 +63,12 @@ const userSchema = new Schema<IUser>(
   },
   { timestamps: true },
 );
-userSchema.pre("save", async function (next: HookNextFunction) {
-  //pre("save", ...) → Tells Mongoose "Before a User document is saved to MongoDB, run this function
-  if (!this.isModified("password")) return next(); //prevents hashing a hash
+userSchema.pre("save", async function () {
+  //pre("save", ...) → Tells Mongoose “Before a User document is saved to MongoDB, run this function
+  if (!this.isModified("password")) return; //prevents hashing a hash
 
   const saltRounds = 10;
   this.password = await bcrypt.hash(this.password, saltRounds);
-  next();
 });
 userSchema.methods.comparePassword = async function (
   candidate: string,

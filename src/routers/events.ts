@@ -3,7 +3,7 @@ import * as eventController from "../controllers/event";
 import { authMiddleware } from "../middleware/auth";
 import { authRole } from "../middleware/role";
 import { upload } from "../middleware/upload";
-
+import { validateEventCreation, handleValidationErrors } from "../middleware/validation";
 const router = express.Router();
 router.get("/", eventController.getAllEvents);
 router.get("/:id", eventController.getEvent);
@@ -12,6 +12,8 @@ router.post(
   authMiddleware,
   authRole("admin"),
   upload.single("image"),
+  validateEventCreation,
+  handleValidationErrors,
   eventController.createEvent,
 );
 router.put(
@@ -19,6 +21,8 @@ router.put(
   authMiddleware,
   authRole("admin"),
   upload.single("image"),
+  validateEventCreation,
+  handleValidationErrors,
   eventController.updateEvent,
 );
 router.delete(

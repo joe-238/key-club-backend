@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 const jwt = require("jsonwebtoken");
+import { Role } from "../models/users";
 
 interface JwtPayload {
   id: string;
   email: string;
-  role: string;
+  role: Role;
 }
 export const authMiddleware = (
   req: Request,
@@ -32,10 +33,10 @@ export const authMiddleware = (
     // Role authorized
     next();
   } catch (error) {
-    console.error("authRole middleware error:", error);
+    console.log(error);
+
     return res.status(500).json({
-      success: false,
-      message: "Server error during role authorization",
+      message: "Failed to login user",
     });
   }
 };
