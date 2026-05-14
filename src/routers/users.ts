@@ -11,7 +11,7 @@ router.put(
   "/:id/profile-image",
   authMiddleware,
   upload.single("image"),
-  userController.updateProfileImage,
+  userController.updateProfileImage
 );
 
 export default router;
