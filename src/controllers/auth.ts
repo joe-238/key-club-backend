@@ -4,7 +4,7 @@ import generateToken from "../utils/generateToken";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { osis, name, email, password, grade } = req.body;
+    const { osis, name, email, password, grade, role } = req.body;
     if (!osis || !name || !email || !password || !grade) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -20,6 +20,7 @@ export const register = async (req: Request, res: Response) => {
       email,
       password,
       grade,
+      role: role || "member",
     });
 
     res.status(201).json({
@@ -50,7 +51,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const token = generateToken(user._id.toString());
+    const token = generateToken(user);
 
     return res.status(200).json({
       message: "Login successful",
