@@ -119,9 +119,9 @@ const userSchema = new Schema<IUser>(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
-userSchema.pre("save", async function () {
+userSchema.pre("save", async function (next) {
   //pre("save", ...) → Tells Mongoose “Before a User document is saved to MongoDB, run this function
   if (!this.isModified("password")) return; //prevents hashing a hash
 
@@ -129,7 +129,7 @@ userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, saltRounds);
 });
 userSchema.methods.comparePassword = async function (
-  candidate: string
+  candidate: string,
 ): Promise<boolean> {
   return bcrypt.compare(candidate, this.password);
 };

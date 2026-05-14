@@ -24,7 +24,12 @@ export const register = async (req: Request, res: Response) => {
 
     res.status(201).json({
       message: "User created successfully",
-      user,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        grade: user.grade,
+      },
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to create user" });
@@ -34,14 +39,32 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return res.status(400).json({ message: "Missing required fields" });
     }
+
     const user = await userModel.User.findOne({ email });
+
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
+
+    const token = generateToken(user._id.toString());
+
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        grade: user.grade,
+      },
+    });
   } catch (error) {
-    res.status(500).json({ message: "Failed to login user" });
+    return res.status(500).json({
+      message: "Failed to login user",
+    });
   }
 };

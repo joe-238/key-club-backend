@@ -5,30 +5,48 @@ export interface IAnnouncement {
   publisher: Types.ObjectId;
   title: string;
   description: string;
-  //add image here
+  image?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
-const announcementSchema = new Schema<IAnnouncement>({
-  status: {
-    type: String,
-    required: true,
-    enum: ["draft", "published"],
-    default: "draft",
+const announcementSchema = new Schema<IAnnouncement>(
+  {
+    status: {
+      type: String,
+      required: true,
+      enum: ["draft", "published"],
+      default: "draft",
+    },
+
+    publisher: {
+      type: Schema.Types.ObjectId,
+      ref: "User", // optional but recommended
+      required: true,
+    },
+
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100,
+    },
+
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    image: {
+      type: String,
+    },
   },
-  publisher: {
-    type: Types.ObjectId,
-    required: true,
+  {
+    timestamps: true,
   },
-  title: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-});
+);
 
 export const announcement = model<IAnnouncement>(
   "announcement",
-  announcementSchema
+  announcementSchema,
 );
