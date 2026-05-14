@@ -7,6 +7,9 @@ export const createHours = async (req: Request, res: Response) => {
     if (!eventId || !userId || !hours || !date) {
       return res.status(400).json({ message: "Missing required fields" });
     }
+    if (hours <= 0) {
+      return res.status(400).json({ message: "Invalid hours" });
+    }
     const serviceHours = await serviceHourModel.ServiceHours.create({
       eventId,
       userId,
@@ -24,8 +27,7 @@ export const createHours = async (req: Request, res: Response) => {
 
 export const getHours = async (req: Request, res: Response) => {
   try {
-    const eventId = req.query.eventId as string;
-    const userId = req.query.userId as string;
+    const { eventId, userId } = req.params;
     if (!eventId || !userId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -36,7 +38,7 @@ export const getHours = async (req: Request, res: Response) => {
     if (!serviceHours) {
       return res.status(404).json({ message: "Service hours not found" });
     }
-    res.status(201).json({
+    res.status(200).json({
       message: "Service Hours found",
       serviceHours,
     });
@@ -45,25 +47,58 @@ export const getHours = async (req: Request, res: Response) => {
   }
 };
 
+export const updateHours = async (req: Request, res: Response) => {
+  try {
+    const { eventId, userId } = req.params;
+    const updates = req.body;
+
+    if (updates.hours && updates.hours <= 0) {
+      return res.status(400).json({ message: "Invalid hours" });
+    }
+
+    const updatedHours = await serviceHourModel.ServiceHours.findOneAndUpdate(
+      { eventId, userId },
+      updates,
+      { new: true, runValidators: true },
+    );
+
+    if (!updatedHours) {
+      return res.status(404).json({ message: "Service hours not found" });
+    }
+
+    return res.status(200).json({
+      message: "Service hours updated successfully",
+      serviceHours: updatedHours,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update hours" });
+  }
+};
+
 export const deleteHours = async (req: Request, res: Response) => {
   try {
-    const eventId = req.query.eventId as string;
-    const userId = req.query.userId as string;
+    const { eventId, userId } = req.params;
+
     if (!eventId || !userId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
-    const result = await serviceHourModel.ServiceHours.findOneAndDelete({
+
+    const deleted = await serviceHourModel.ServiceHours.findOneAndDelete({
       eventId,
       userId,
     });
-    if (!result) {
+
+    if (!deleted) {
       return res.status(404).json({ message: "Service hours not found" });
     }
-    res.status(201).json({
-      message: "Service Hours deleted",
-      result,
+
+    return res.status(200).json({
+      message: "Service hours deleted successfully",
+      serviceHours: deleted,
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete hours" });
+    return res.status(500).json({
+      message: "Failed to delete service hours",
+    });
   }
 };

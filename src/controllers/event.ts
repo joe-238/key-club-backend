@@ -3,6 +3,8 @@ import * as eventModel from "../models/events";
 
 export const createEvent = async (req: Request, res: Response) => {
   try {
+    const image = req.file ? req.file.path : undefined;
+
     const {
       title,
       type,
@@ -11,25 +13,16 @@ export const createEvent = async (req: Request, res: Response) => {
       hours,
       startTime,
       endTime,
-      createdBy,
       maxParticipants,
-      createdAt,
       isDraft,
     } = req.body;
-    if (
-      !title ||
-      !type ||
-      !description ||
-      !location ||
-      !hours ||
-      !startTime ||
-      !endTime ||
-      !createdBy ||
-      !createdAt ||
-      isDraft === undefined
-    ) {
+
+    const createdBy = req.user?.id;
+
+    if (!title || !type || !location || !hours || !startTime || !endTime) {
       return res.status(400).json({ message: "Missing required fields" });
     }
+
     const event = await eventModel.Event.create({
       title,
       type,
@@ -40,21 +33,22 @@ export const createEvent = async (req: Request, res: Response) => {
       endTime,
       createdBy,
       maxParticipants,
-      createdAt,
       isDraft,
+      image,
     });
-    res.status(201).json({
+
+    return res.status(201).json({
       message: "Event created successfully",
       event,
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to create event" });
+    return res.status(500).json({ message: "Failed to create event" });
   }
 };
 
 export const getEvent = async (req: Request, res: Response) => {
   try {
-    const id = req.query.id as string;
+    const id = req.params.id as string;
     if (!id) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -73,9 +67,46 @@ export const getEvent = async (req: Request, res: Response) => {
   }
 };
 
+export const getAllEvents = async (req: Request, res: Response) => {
+  try {
+    const events = await eventModel.Event.find().populate(
+      "createdBy",
+      "name email",
+    );
+
+    return res.status(200).json({ events });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to fetch events" });
+  }
+};
+
+export const updateEvent = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const updates = req.body;
+
+    const updatedEvent = await eventModel.Event.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true },
+    );
+
+    if (!updatedEvent) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    return res.status(200).json({
+      message: "Event updated successfully",
+      event: updatedEvent,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update event" });
+  }
+};
+
 export const deleteEvent = async (req: Request, res: Response) => {
   try {
-    const id = req.query.id as string;
+    const id = req.params.id as string;
     if (!id) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -90,6 +121,6 @@ export const deleteEvent = async (req: Request, res: Response) => {
       result,
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to get event" });
+    res.status(500).json({ message: "Failed to delete event" });
   }
 };

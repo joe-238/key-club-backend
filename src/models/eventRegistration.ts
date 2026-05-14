@@ -29,16 +29,16 @@ const eventRegistrationSchema = new Schema<IEventRegistration>({
   eventId: {
     type: Types.ObjectId,
     required: true,
-    ref: "event",
+    ref: "Event",
   },
   userId: {
     type: Types.ObjectId,
     required: true,
-    ref: "user",
+    ref: "User",
   },
 });
 eventRegistrationSchema.index({ eventId: 1, userId: 1 }, { unique: true });
 export const EventRegistration = model<IEventRegistration>(
-  "eventRegistration",
-  eventRegistrationSchema
+  "EventRegistration",
+  eventRegistrationSchema,
 );

@@ -1,66 +1,4 @@
-/* import { Event } from "./events";
-import { EventRegistration } from "./eventRegistration";
-
-
-export class User {
-  constructor(
-    //runs automatically when you create a new object from a class
-    public id: number, //osis or maybe use uuid, if use uuid change it to string
-    public name: string,
-    public email: string,
-    private password: string,
-    public grade: number,
-    public role: UserRole = "member",
-    public totalServiceHours: number,
-  ) {}
-  changePassword(newPassword: string) {
-    this.password = newPassword;
-  }
-  joinEvent(eventId: string, userId: number) {
-    return new EventRegistration(eventId, userId);
-  }
-  deleteAccount() {
-    //waiot...
-  }
-}
-
-export class AdminUser extends User {
-  constructor(
-    id: number,
-    name: string,
-    email: string,
-    password: string,
-    grade: number,
-  ) {
-    super(id, name, email, password, grade, "admin", 0);
-  }
-  deleteUser(userId: number) {
-    console.log(`Deleted user ${userId}`);
-  }
-  createEvent(
-    title: string,
-    type: string,
-    description: string,
-    location: string,
-    startTime: Date,
-    endTime: Date,
-    createdBy: number,
-    maxParticipants?: number,
-  ): Event {
-    return new Event(
-      title,
-      type,
-      description,
-      location,
-      startTime,
-      endTime,
-      createdBy,
-      maxParticipants,
-    );
-  }
-} */
-
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, HookNextFunction } from "mongoose";
 import bcrypt from "bcrypt";
 
 export enum Role {
@@ -76,7 +14,7 @@ export interface IUser extends Document {
   grade: number;
   role: Role;
   totalServiceHours: number;
-
+  profileImage: string;
   comparePassword(candidate: string): Promise<boolean>;
 }
 const userSchema = new Schema<IUser>(
@@ -118,20 +56,24 @@ const userSchema = new Schema<IUser>(
       type: Number,
       default: 0,
     },
+    profileImage: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true },
 );
-userSchema.pre("save", async function (next) {
-  //pre("save", ...) → Tells Mongoose “Before a User document is saved to MongoDB, run this function
-  if (!this.isModified("password")) return; //prevents hashing a hash
+userSchema.pre("save", async function (next: HookNextFunction) {
+  //pre("save", ...) → Tells Mongoose "Before a User document is saved to MongoDB, run this function
+  if (!this.isModified("password")) return next(); //prevents hashing a hash
 
   const saltRounds = 10;
   this.password = await bcrypt.hash(this.password, saltRounds);
+  next();
 });
 userSchema.methods.comparePassword = async function (
   candidate: string,
 ): Promise<boolean> {
   return bcrypt.compare(candidate, this.password);
 };
-
-export const User = model<IUser>("user", userSchema);
+export const User = model<IUser>("User", userSchema);

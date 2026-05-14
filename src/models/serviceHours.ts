@@ -1,33 +1,30 @@
-/* export class ServiceHours {
-  constructor(
-    public id: string,
-    public userId: string,
-    public hours: number,
-    public date: Date,
-  ) {}
-} */
-
 import { Schema, model, Types } from "mongoose";
+
 export interface IServiceHours {
   eventId: Types.ObjectId;
-  userId: string;
+  userId: Types.ObjectId;
   hours: number;
   date: Date;
 }
+
 const serviceHoursSchema = new Schema<IServiceHours>({
   eventId: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
+    ref: "Event",
     required: true,
-    ref: "event",
   },
+
   userId: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
+
   hours: {
     type: Number,
     required: true,
   },
+
   date: {
     type: Date,
     required: true,
@@ -35,6 +32,6 @@ const serviceHoursSchema = new Schema<IServiceHours>({
 });
 
 export const ServiceHours = model<IServiceHours>(
-  "serviceHours",
+  "ServiceHours",
   serviceHoursSchema,
 );

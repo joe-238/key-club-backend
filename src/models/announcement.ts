@@ -45,8 +45,7 @@ const announcementSchema = new Schema<IAnnouncement>(
     timestamps: true,
   },
 );
-
-export const announcement = model<IAnnouncement>(
-  "announcement",
+export const Announcement = model<IAnnouncement>(
+  "Announcement",
   announcementSchema,
 );
