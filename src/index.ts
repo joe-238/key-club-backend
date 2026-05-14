@@ -21,9 +21,14 @@ import eventRegistrationsRouter from "./routers/eventRegistrations";
 import authRouter from "./routers/auth";
 import announcementsRouter from "./routers/announcements";
 import { logger } from "./middleware/logger";
+import { setupSwagger } from './swagger';
 const app = express();
 app.use(express.json());
 app.use(logger);
+
+// Setup Swagger before routes
+setupSwagger(app);
+
 app.use("/users", usersRouter);
 app.use("/events", eventsRouter);
 app.use("/serviceHours", serviceHoursRouter);
